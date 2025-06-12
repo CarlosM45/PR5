@@ -8,9 +8,11 @@ def kruskals_mst(V, edges):
 
     # Organizar las aristas por peso
     edges = sorted(edges,key=cmp_to_key(comparator))
-    
+    print("Aristas ordenadas por peso:", edges)
     # Moverse por las aristas en orden ascendente
     dsu = DSU(V)
+    print("Conjuntos disjuntos iniciales:", dsu.parent)
+    print("Rangos iniciales:", dsu.rank)
     cost = 0
     count = 0
     for x, y, w in edges:
@@ -18,10 +20,16 @@ def kruskals_mst(V, edges):
         # Asegurarse de que no se forme un ciclo
         if dsu.find(x) != dsu.find(y):
             dsu.union(x, y)
+            print(f"Unir {x} y {y} con peso {w}")
+            print("Conjuntos disjuntos actualizados:", dsu.parent)
+            print("Rangos actualizados:", dsu.rank)
             cost += w
             count += 1
             if count == V - 1:
                 break
+    print("Costo total del MST:", cost)
+    print("Conjuntos disjuntos finales:", dsu.parent)
+    print("Rangos finales:", dsu.rank)
     return cost
     
 # Clase para el manejo de conjuntos disjuntos (DSU)
@@ -30,11 +38,13 @@ class DSU:
         self.parent = list(range(n))
         self.rank = [1] * n
 
+    # Método para encontrar el representante del conjunto al que pertenece un elemento
     def find(self, i):
         if self.parent[i] != i:
             self.parent[i] = self.find(self.parent[i])
         return self.parent[i]
 
+    # Método para unir dos conjuntos
     def union(self, x, y):
         s1 = self.find(x)
         s2 = self.find(y)
@@ -50,6 +60,6 @@ class DSU:
 
 if __name__ == '__main__':
     
-    # An edge contains, weight, source and destination
+    # Una arista contiene peso, origen y destino
     edges = [[0, 1, 10], [1, 3, 15], [2, 3, 4], [2, 0, 6], [0, 3, 5]]
-    print(kruskals_mst(4, edges))
+    print("El peso final de unir los vértices es:",kruskals_mst(4, edges))
